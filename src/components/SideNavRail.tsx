@@ -1,6 +1,7 @@
+import { useEffect, useMemo, useState } from 'react'
 import { useAppSelector } from '@/app/hooks'
 import { supabase } from '@/lib/supabase'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
@@ -26,7 +27,40 @@ export default function SideNavRail({
   onNavigate: (p: (typeof navItems)[number]['key']) => void
 }) {
   const user = useAppSelector(s => s.auth.user)
-  const initials = (user?.email || '?').slice(0, 2).toUpperCase()
+
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
+  const [profileUsername, setProfileUsername] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!user) return
+
+    let cancelled = false
+    ;(async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('username, avatar_url')
+        .eq('id', user.id)
+        .maybeSingle()
+
+      if (cancelled) return
+
+      if (error) {
+        setAvatarUrl(null)
+        setProfileUsername(null)
+        return
+      }
+
+      setAvatarUrl((data as any)?.avatar_url ?? null)
+      setProfileUsername((data as any)?.username ?? null)
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [user?.id])
+
+  const displayName = profileUsername || user?.email?.split('@')[0] || user?.email || 'User'
+  const initials = useMemo(() => (displayName || '?').slice(0, 2).toUpperCase(), [displayName])
 
   async function handleSignOut() {
     await supabase.auth.signOut()
@@ -68,6 +102,7 @@ export default function SideNavRail({
             <DropdownMenuTrigger asChild>
               <button className="relative focus:outline-none">
                 <Avatar className="w-10 h-10 border-2 border-white shadow-sm">
+                  <AvatarImage src={avatarUrl ?? undefined} alt={displayName} />
                   <AvatarFallback className="bg-primary-container text-on-primary-container font-bold text-sm">
                     {initials}
                   </AvatarFallback>
