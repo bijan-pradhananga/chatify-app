@@ -37,6 +37,11 @@ const roomsSlice = createSlice({
     setActiveRoom(state, action: PayloadAction<Room | null>) {
       state.activeRoom = action.payload
     },
+    removeRoom(state, action: PayloadAction<string>) {
+      const id = action.payload
+      state.rooms = state.rooms.filter(r => r.id !== id)
+      if (state.activeRoom?.id === id) state.activeRoom = null
+    },
     updateRoomLastMessage(state, action: PayloadAction<{ roomId: string; message: string; at: string }>) {
       const room = state.rooms.find(r => r.id === action.payload.roomId)
       if (room) {
@@ -47,5 +52,5 @@ const roomsSlice = createSlice({
   },
 })
 
-export const { setRooms, addRoom, setActiveRoom, updateRoomLastMessage } = roomsSlice.actions
+export const { setRooms, addRoom, setActiveRoom, removeRoom, updateRoomLastMessage } = roomsSlice.actions
 export default roomsSlice.reducer
