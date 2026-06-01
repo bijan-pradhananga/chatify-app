@@ -9,7 +9,6 @@ import RoomList from '../features/rooms/RoomList'
 import MessageList from '../features/chat/MessageList'
 import MessageInput from '../features/chat/MessageInput'
 import type { Room } from '../features/rooms/roomsSlice'
-import { Button } from '@/components/ui/button'
 import SideNavRail from '@/components/SideNavRail'
 import ChatTopHeader from './chat/ChatTopHeader'
 import ChatRoomHeader from './chat/ChatRoomHeader'
@@ -99,16 +98,18 @@ export default function ChatPage() {
         <ChatTopHeader search={search} onSearchChange={setSearch} />
 
         <div className="flex flex-1 overflow-hidden">
-          <div className={activeRoom ? 'hidden md:block' : 'block'}>
+          <div className={activeRoom ? 'hidden md:block' : 'block w-full md:w-96'}>
             <RoomList />
           </div>
 
           {activeRoom ? (
             <div className="flex flex-col flex-1 min-w-0">
               <ChatRoomHeader
+                roomId={activeRoom.id}
                 roomName={roomName ?? 'Unknown'}
                 roomInitials={roomInitials}
                 roomType={activeRoom.type}
+                createdBy={activeRoom.created_by}
                 onBack={handleBackToRooms}
               />
 
@@ -123,11 +124,6 @@ export default function ChatPage() {
         </div>
       </main>
 
-      {/* Mobile FAB */}
-      <Button size="icon"
-        className="fixed bottom-8 right-8 w-14 h-14 bg-primary text-white rounded-full shadow-2xl hover:scale-105 active:scale-95 transition-all lg:hidden">
-        <span className="material-symbols-outlined">message</span>
-      </Button>
     </div>
   )
 }
