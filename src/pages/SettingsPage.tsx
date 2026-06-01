@@ -227,7 +227,7 @@ export default function SettingsPage() {
             <span className="material-symbols-outlined">arrow_back</span>
           </Button>
           <span className="text-xl font-bold tracking-tight text-slate-900">Chatify</span>
-          <div className="ml-4 flex items-center bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant/30">
+          <div className="ml-4  items-center bg-surface-container-low px-3 py-1.5 rounded-lg border border-outline-variant/30 hidden">
             <span className="material-symbols-outlined text-slate-400 mr-2 text-lg">search</span>
             <input className="bg-transparent border-none focus:ring-0 outline-none text-body-md w-64" placeholder="Search settings..." type="text" />
           </div>
@@ -264,7 +264,7 @@ export default function SettingsPage() {
 
         <main className="flex-1 flex overflow-hidden">
           {/* Settings Sidebar */}
-          <div className="w-72 border-r border-slate-200 bg-white overflow-y-auto flex-shrink-0">
+          <div className="w-72 border-r border-slate-200 bg-white overflow-y-auto flex-shrink-0 hidden md:block">
             <div className="p-6">
               <h1 className="text-headline-lg mb-6">Settings</h1>
               <div className="space-y-1">
