@@ -49,10 +49,11 @@ export default function RoomList() {
     dispatch(setActiveRoom(room))
     dispatch(setChatRoom(room.id))
   }
+  // console.log('Rendering RoomList with rooms:', rooms, 'activeRoom:', activeRoom)
 
   return (
     <>
-      <section className="w-full md:w-96 flex flex-col border-r border-slate-100 flex-shrink-0">
+      <section className="w-full md:w-96 flex flex-col border-r border-slate-100flex-shrink-0">
         <div className="p-4 flex items-center justify-between">
           <div className="flex space-x-2">
             {(['all', 'dms','groups'] as const).map(f => (
