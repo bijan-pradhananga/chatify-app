@@ -17,7 +17,7 @@ export default function ChatTopHeader({
         <div className="flex items-center space-x-4 flex-1 min-w-0">
           <h1 className="text-xl font-bold tracking-tight text-slate-900">Chatify</h1>
 
-        <div className="relative w-full max-w-md sm:ml-8 hidden sm:block">
+        <div className="relative w-full max-w-md sm:ml-8 hidden ">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">
             search
           </span>
