@@ -131,7 +131,6 @@ export default function MessageInput() {
             </Button>
           </div>
         </div>
-        <p className="text-center mt-2 text-label-sm text-slate-400">Press Enter to send, Shift + Enter for new line</p>
       </form>
       <input ref={fileRef} type="file" accept={ALLOWED_TYPES.join(',')} multiple className="hidden" onChange={handleFile} />
     </footer>
