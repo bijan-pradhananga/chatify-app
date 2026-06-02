@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
+import AppHeader from '@/components/AppHeader'
+import AppFooter from '@/components/AppFooter'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -24,17 +26,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-surface overflow-x-hidden" style={{ background: 'radial-gradient(circle at top right, #dbe1ff 0%, #faf8ff 50%, #eef0ff 100%)' }}>
-      {/* TopAppBar */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-slate-100 shadow-sm sticky top-0 z-50">
-        <div className="flex justify-between items-center w-full px-6 py-3 max-w-7xl mx-auto">
-          <span className="text-xl font-bold tracking-tight text-blue-600">Chatify</span>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="text-slate-500">
-              <span className="material-symbols-outlined">help_outline</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <AppHeader />
 
       <main className="flex-grow flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.08)] border border-white/50 p-8 flex flex-col gap-6"
@@ -118,19 +110,7 @@ export default function LoginPage() {
         </div>
       </main>
 
-      <footer className="bg-slate-50 border-t border-slate-200 mt-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center w-full px-6 py-8 max-w-7xl mx-auto gap-4">
-          <div className="flex flex-col items-center md:items-start gap-1">
-            <span className="text-lg font-bold text-slate-900">Chatify</span>
-            <span className="text-sm font-medium text-slate-500">© 2024 Chatify. Secure & Encrypted.</span>
-          </div>
-          <nav className="flex gap-6">
-            <a className="text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors" href="#">Privacy Policy</a>
-            <a className="text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors" href="#">Terms of Service</a>
-            <a className="text-sm font-medium text-slate-500 hover:text-slate-700 transition-colors" href="#">Security Overview</a>
-          </nav>
-        </div>
-      </footer>
+      <AppFooter />
     </div>
   )
 }
