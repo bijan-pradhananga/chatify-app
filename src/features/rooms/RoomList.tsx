@@ -35,6 +35,7 @@ export default function RoomList() {
   const dispatch = useAppDispatch()
   const rooms = useAppSelector(s => s.rooms.rooms)
   const activeRoom = useAppSelector(s => s.rooms.activeRoom)
+  const onlineUserIds = useAppSelector(s => s.presence.onlineUserIds)
   const [filter, setFilter] = useState<'all' | 'dms' | 'groups'>('all')
   const [showModal, setShowModal] = useState(false)
 
@@ -87,8 +88,8 @@ export default function RoomList() {
                     isActive ? 'bg-blue-50 dark:bg-blue-950' : 'hover:bg-slate-50 dark:hover:bg-gray-800')}>
                   <div className="relative">
                     <RoomAvatar room={room} />
-                    {room.type === 'dm' && (
-                      <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full" />
+                    {room.type === 'dm' && room.other_user?.id && onlineUserIds.includes(room.other_user.id) && (
+                      <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full" />
                     )}
                   </div>
                   <div className="ml-4 flex-1 min-w-0">

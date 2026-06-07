@@ -3,6 +3,7 @@ import authReducer from '../features/auth/authSlice'
 import chatReducer from '../features/chat/chatSlice'
 import roomsReducer from '../features/rooms/roomsSlice'
 import spamReducer from '../features/spam/spamSlice'
+import presenceReducer from '../features/presence/presenceSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     chat: chatReducer,
     rooms: roomsReducer,
     spam: spamReducer,
+    presence: presenceReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({ serializableCheck: false }),

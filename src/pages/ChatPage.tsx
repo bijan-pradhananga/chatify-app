@@ -5,6 +5,7 @@ import { setRooms, setActiveRoom as setRoomsActiveRoom } from '../features/rooms
 import { setMessages, setActiveRoom as setChatActiveRoom } from '../features/chat/chatSlice'
 import { supabase } from '../lib/supabase'
 import { useRealtime } from '../hooks/useRealtime'
+import { useGlobalPresence } from '../hooks/useGlobalPresence'
 import RoomList from '../features/rooms/RoomList'
 import MessageList from '../features/chat/MessageList'
 import MessageInput from '../features/chat/MessageInput'
@@ -24,6 +25,7 @@ export default function ChatPage() {
   const [search, setSearch] = useState('')
 
   useRealtime(activeRoomId)
+  useGlobalPresence()
 
   useEffect(() => {
     if (!user) return
@@ -78,7 +80,8 @@ export default function ChatPage() {
         }
 
         if (room.type === 'dm') {
-          return { ...base, other_user: (otherMemberResult.data as any)?.profiles || { username: 'Unknown', avatar_url: null } }
+          const om = otherMemberResult.data as any
+          return { ...base, other_user: { id: om?.user_id, ...(om?.profiles || { username: 'Unknown', avatar_url: null }) } }
         }
         return base
       })
@@ -134,6 +137,7 @@ export default function ChatPage() {
                 roomInitials={roomInitials}
                 roomType={activeRoom.type}
                 createdBy={activeRoom.created_by}
+                otherUserId={activeRoom.other_user?.id}
                 onBack={handleBackToRooms}
               />
 

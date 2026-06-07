@@ -36,6 +36,7 @@ export default function ChatRoomHeader({
   roomInitials,
   roomType,
   createdBy,
+  otherUserId,
   onBack,
 }: {
   roomId: string
@@ -43,10 +44,13 @@ export default function ChatRoomHeader({
   roomInitials: string
   roomType: 'dm' | 'group'
   createdBy: string
+  otherUserId?: string
   onBack: () => void
 }) {
   const dispatch = useAppDispatch()
   const user = useAppSelector(s => s.auth.user)
+  const onlineUserIds = useAppSelector(s => s.presence.onlineUserIds)
+  const isOnline = roomType === 'dm' && !!otherUserId && onlineUserIds.includes(otherUserId)
 
   const [addOpen, setAddOpen] = useState(false)
   const [membersOpen, setMembersOpen] = useState(false)
@@ -257,12 +261,14 @@ export default function ChatRoomHeader({
               {roomInitials}
             </AvatarFallback>
           </Avatar>
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
+          {isOnline && <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full" />}
         </div>
 
         <div className="min-w-0">
           <h1 className="text-slate-900 dark:text-gray-100 text-headline-md tracking-tight truncate">{roomName}</h1>
-          <p className="text-slate-500 dark:text-gray-400 text-label-md">{roomType === 'dm' ? 'Online' : 'Group Chat'}</p>
+          <p className="text-label-md text-slate-500 dark:text-gray-400">
+            {roomType === 'dm' ? (isOnline ? 'Online' : 'Offline') : 'Group Chat'}
+          </p>
         </div>
       </div>
 
