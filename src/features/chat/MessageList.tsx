@@ -20,11 +20,11 @@ export default function MessageList() {
   })
 
   return (
-    <main className="flex-1 overflow-y-auto p-lg flex flex-col space-y-thread-gap bg-surface">
+    <main className="flex-1 overflow-y-auto p-lg flex flex-col space-y-thread-gap bg-surface dark:bg-gray-900">
       {grouped.map(group => (
         <div key={group.date} className="px-4">
           <div className="flex justify-center my-4">
-            <span className="bg-surface-container text-on-surface-variant px-3 py-1 rounded-full text-label-sm">{group.date}</span>
+            <span className="bg-surface-container dark:bg-gray-700 text-on-surface-variant dark:text-gray-400 px-3 py-1 rounded-full text-label-sm">{group.date}</span>
           </div>
           {group.messages.map((msg, i) => {
             const isOwn = msg.sender_id === currentUserId

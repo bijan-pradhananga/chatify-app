@@ -47,16 +47,40 @@ export default function ChatPage() {
     const rooms: Room[] = await Promise.all(
       (data as any[]).map(async (d) => {
         const room = d.rooms
-        if (room.type === 'dm') {
-          const { data: otherMember } = await supabase
-            .from('room_members')
-            .select('user_id, profiles(username, avatar_url)')
+
+        const [otherMemberResult, lastMsgResult] = await Promise.all([
+          room.type === 'dm'
+            ? supabase
+                .from('room_members')
+                .select('user_id, profiles(username, avatar_url)')
+                .eq('room_id', room.id)
+                .neq('user_id', user.id)
+                .single()
+            : Promise.resolve({ data: null }),
+          supabase
+            .from('messages')
+            .select('content, created_at, message_type')
             .eq('room_id', room.id)
-            .neq('user_id', user.id)
-            .single()
-          return { ...room, other_user: (otherMember as any)?.profiles || { username: 'Unknown', avatar_url: null } }
+            .eq('is_deleted', false)
+            .eq('is_spam', false)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle(),
+        ])
+
+        const lastMsg = lastMsgResult.data as any
+        const base = {
+          ...room,
+          last_message: lastMsg
+            ? lastMsg.message_type === 'image' ? '📷 Photo' : (lastMsg.content || '📷 Photo')
+            : null,
+          last_message_at: lastMsg?.created_at ?? null,
         }
-        return room
+
+        if (room.type === 'dm') {
+          return { ...base, other_user: (otherMemberResult.data as any)?.profiles || { username: 'Unknown', avatar_url: null } }
+        }
+        return base
       })
     )
     dispatch(setRooms(rooms))
@@ -94,7 +118,7 @@ export default function ChatPage() {
     <div className="flex h-screen overflow-hidden">
       <SideNavRail activePage={activePage} onNavigate={handleNavigate} />
 
-      <main className="flex flex-col flex-1 min-w-0 bg-white">
+      <main className="flex flex-col flex-1 min-w-0 bg-white dark:bg-gray-900">
         <ChatTopHeader search={search} onSearchChange={setSearch} />
 
         <div className="flex flex-1 overflow-hidden">

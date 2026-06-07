@@ -33,7 +33,7 @@ export default function ChatBubble({ message, isOwn, showAvatar }: Props) {
       <div className="flex flex-col items-end self-end w-full md:px-10">
         <div className="flex flex-col items-end space-y-message-gap">
           {isHidden ? (
-            <div className="bg-surface-container text-on-surface-variant px-4 py-2.5 rounded-2xl rounded-br-none shadow-sm text-body-md italic">
+            <div className="bg-surface-container dark:bg-gray-700 text-on-surface-variant dark:text-gray-400 px-4 py-2.5 rounded-2xl rounded-br-none shadow-sm text-body-md italic">
               [Message blocked as spam]
             </div>
           ) : (
@@ -52,7 +52,7 @@ export default function ChatBubble({ message, isOwn, showAvatar }: Props) {
           )}
         </div>
         <div className="flex items-center mt-1 space-x-1">
-          <span className="text-slate-400 text-label-sm">{formatTime(message.created_at)}</span>
+          <span className="text-slate-400 dark:text-gray-500 text-label-sm">{formatTime(message.created_at)}</span>
           <span className="material-symbols-outlined text-blue-500 text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
         </div>
       </div>
@@ -69,19 +69,19 @@ export default function ChatBubble({ message, isOwn, showAvatar }: Props) {
         </div>
         <div className="flex flex-col space-y-message-gap">
           {isHidden ? (
-            <div className="bg-slate-100 text-slate-500 px-4 py-2.5 rounded-2xl rounded-bl-none shadow-sm text-body-md italic">
+            <div className="bg-slate-100 dark:bg-gray-700 text-slate-500 dark:text-gray-400 px-4 py-2.5 rounded-2xl rounded-bl-none shadow-sm text-body-md italic">
               [Message blocked as spam]
             </div>
           ) : (
             <>
               {isFlagged && <SpamBadge score={message.spam_score} isSpam={false} />}
               {message.content && (
-                <div className="bg-slate-100 text-slate-900 px-4 py-2.5 rounded-2xl rounded-bl-none shadow-sm text-body-md">
+                <div className="bg-slate-100 dark:bg-gray-700 text-slate-900 dark:text-gray-100 px-4 py-2.5 rounded-2xl rounded-bl-none shadow-sm text-body-md">
                   {message.content}
                 </div>
               )}
               {message.attachments?.map(att => (
-                <div key={att.id} className="bg-slate-100 p-2 rounded-2xl rounded-bl-none shadow-sm overflow-hidden border border-slate-200">
+                <div key={att.id} className="bg-slate-100 dark:bg-gray-700 p-2 rounded-2xl rounded-bl-none shadow-sm overflow-hidden border border-slate-200 dark:border-gray-600">
                   <img src={att.public_url} alt={att.file_name} className="rounded-xl w-full max-w-sm object-cover aspect-video mb-2" />
                 </div>
               ))}
@@ -89,7 +89,7 @@ export default function ChatBubble({ message, isOwn, showAvatar }: Props) {
           )}
         </div>
       </div>
-      <span className="ml-10 mt-1 text-slate-400 text-label-sm">{formatTime(message.created_at)}</span>
+      <span className="ml-10 mt-1 text-slate-400 dark:text-gray-500 text-label-sm">{formatTime(message.created_at)}</span>
     </div>
   )
 }

@@ -240,7 +240,7 @@ export default function ChatRoomHeader({
   }
 
   return (
-    <header className="bg-white border-b border-slate-200 flex items-center justify-between px-6 py-3 shadow-sm z-10">
+    <header className="bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between px-6 py-3 shadow-sm dark:shadow-gray-900 z-10">
       <div className="flex items-center space-x-3 min-w-0">
         <Button
           variant="ghost"
@@ -261,8 +261,8 @@ export default function ChatRoomHeader({
         </div>
 
         <div className="min-w-0">
-          <h1 className="text-slate-900 text-headline-md tracking-tight truncate">{roomName}</h1>
-          <p className="text-slate-500 text-label-md">{roomType === 'dm' ? 'Online' : 'Group Chat'}</p>
+          <h1 className="text-slate-900 dark:text-gray-100 text-headline-md tracking-tight truncate">{roomName}</h1>
+          <p className="text-slate-500 dark:text-gray-400 text-label-md">{roomType === 'dm' ? 'Online' : 'Group Chat'}</p>
         </div>
       </div>
 
@@ -413,7 +413,7 @@ export default function ChatRoomHeader({
                   const initials = (username || '?').slice(0, 2).toUpperCase()
                   const canRemove = isOwner && user?.id !== m.user_id
                   return (
-                    <div key={m.user_id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50">
+                    <div key={m.user_id} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-gray-700">
                       <Avatar className="w-9 h-9 flex-shrink-0">
                         <AvatarImage src={m.profiles?.avatar_url ?? undefined} alt={username} />
                         <AvatarFallback className="bg-primary-container text-on-primary-container font-bold text-xs">
@@ -423,12 +423,12 @@ export default function ChatRoomHeader({
 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 min-w-0">
-                          <p className="text-sm font-medium text-slate-900 truncate">{username}</p>
+                          <p className="text-sm font-medium text-slate-900 dark:text-gray-100 truncate">{username}</p>
                           {m.role && (
-                            <span className="text-xs text-slate-500">({m.role})</span>
+                            <span className="text-xs text-slate-500 dark:text-gray-400">({m.role})</span>
                           )}
                           {user?.id === m.user_id && (
-                            <span className="text-xs text-slate-500">(you)</span>
+                            <span className="text-xs text-slate-500 dark:text-gray-400">(you)</span>
                           )}
                         </div>
                       </div>

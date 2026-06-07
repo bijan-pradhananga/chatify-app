@@ -305,15 +305,15 @@ export default function ContactsPage() {
         }}
       />
 
-      <main className="flex flex-col flex-1 min-w-0 bg-white">
-        <header className="flex items-center justify-between px-6 py-3 w-full bg-white border-b border-slate-200">
+      <main className="flex flex-col flex-1 min-w-0 bg-white dark:bg-gray-900">
+        <header className="flex items-center justify-between px-6 py-3 w-full bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-700">
           <div className="flex items-center space-x-4 flex-1">
-            <h1 className="text-xl font-bold tracking-tight text-slate-900">Chatify</h1>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-gray-100">Chatify</h1>
           </div>
         </header>
 
         <div className="flex flex-1 overflow-hidden">
-          <section className="w-full md:w-96 flex flex-col border-r border-slate-100 flex-shrink-0">
+          <section className="w-full md:w-96 flex flex-col border-r border-slate-100 dark:border-gray-700 flex-shrink-0">
             <div className="p-4 flex items-center justify-between">
               <Tabs value={tab} onValueChange={v => setTab(v as any)} className="w-full">
                 <TabsList className="w-full">
@@ -332,9 +332,9 @@ export default function ContactsPage() {
                 <ScrollArea className="flex-1">
                   <div className="space-y-1 p-2">
                     {loadingContacts ? (
-                      <div className="text-center text-slate-400 text-body-md py-12">Loading contacts…</div>
+                      <div className="text-center text-slate-400 dark:text-gray-500 text-body-md py-12">Loading contacts…</div>
                     ) : contacts.length === 0 ? (
-                      <div className="text-center text-slate-400 text-body-md py-12">
+                      <div className="text-center text-slate-400 dark:text-gray-500 text-body-md py-12">
                         <span className="material-symbols-outlined text-4xl block mb-2 text-slate-200">group</span>
                         No contacts yet
                       </div>
@@ -354,7 +354,7 @@ export default function ContactsPage() {
                             }}
                             className={cn(
                               'flex items-center p-3 rounded-xl cursor-pointer transition-colors',
-                              isActive ? 'bg-blue-50' : 'hover:bg-slate-50'
+                              isActive ? 'bg-blue-50 dark:bg-blue-950' : 'hover:bg-slate-50 dark:hover:bg-gray-800'
                             )}
                           >
                             <Avatar className="w-12 h-12 flex-shrink-0">
@@ -366,7 +366,7 @@ export default function ContactsPage() {
 
                             <div className="ml-4 flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-0.5 gap-2">
-                                <h3 className="text-sm font-semibold text-slate-900 truncate">{name}</h3>
+                                <h3 className="text-sm font-semibold text-slate-900 dark:text-gray-100 truncate">{name}</h3>
                                 <span
                                   className={cn(
                                     'text-xs',
@@ -423,7 +423,7 @@ export default function ContactsPage() {
 
                             <div className="ml-4 flex-1 min-w-0">
                               <div className="flex items-center justify-between mb-0.5 gap-2">
-                                <h3 className="text-sm font-semibold text-slate-900 truncate">{name}</h3>
+                                <h3 className="text-sm font-semibold text-slate-900 dark:text-gray-100 truncate">{name}</h3>
                                 {/* <span className="text-xs text-slate-400">{formatContactTime(req.created_at)}</span> */}
                               </div>
                               <p className="text-xs text-slate-500 truncate text-body-md">Incoming request</p>
@@ -458,7 +458,7 @@ export default function ContactsPage() {
             </Tabs>
           </section>
 
-          <section className="hidden lg:flex flex-1 flex-col bg-slate-50 items-center justify-center p-12 text-center">
+          <section className="hidden lg:flex flex-1 flex-col bg-slate-50 dark:bg-gray-800 items-center justify-center p-12 text-center">
             <div className="w-24 h-24 bg-white rounded-full shadow-xl flex items-center justify-center mb-6">
               <span
                 className="material-symbols-outlined text-4xl text-blue-100"

@@ -19,9 +19,22 @@ function AuthListener() {
       else store.dispatch(clearUser())
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) store.dispatch(setUser({ user: session.user, session }))
-      else store.dispatch(clearUser())
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session) {
+        store.dispatch(setUser({ user: session.user, session }))
+        if (event === 'SIGNED_IN') {
+          const meta = session.user.user_metadata
+          supabase.from('profiles').upsert({
+            id: session.user.id,
+            username: meta?.full_name?.replace(/\s+/g, '').toLowerCase()
+              || session.user.email?.split('@')[0]
+              || '',
+            avatar_url: meta?.avatar_url || null,
+          }, { onConflict: 'id', ignoreDuplicates: true })
+        }
+      } else {
+        store.dispatch(clearUser())
+      }
     })
 
     return () => subscription.unsubscribe()

@@ -53,13 +53,13 @@ export default function RoomList() {
 
   return (
     <>
-      <section className="w-full md:w-96 flex flex-col border-r border-slate-100flex-shrink-0">
+      <section className="w-full md:w-96 flex flex-col border-r border-slate-100 dark:border-gray-700 flex-shrink-0 bg-white dark:bg-gray-900">
         <div className="p-4 flex items-center justify-between">
           <div className="flex space-x-2">
             {(['all', 'dms','groups'] as const).map(f => (
               <button key={f} onClick={() => setFilter(f)}
                 className={cn('px-3 py-1 rounded-full text-label-md capitalize transition-colors',
-                  filter === f ? 'bg-blue-100 text-blue-700' : 'text-slate-500 hover:bg-slate-50')}>
+                  filter === f ? 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-400' : 'text-slate-500 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-gray-800')}>
                 {f}
               </button>
             ))}
@@ -84,7 +84,7 @@ export default function RoomList() {
               return (
                 <div key={room.id} onClick={() => selectRoom(room)}
                   className={cn('flex items-center p-3 rounded-xl cursor-pointer transition-colors',
-                    isActive ? 'bg-blue-50' : 'hover:bg-slate-50')}>
+                    isActive ? 'bg-blue-50 dark:bg-blue-950' : 'hover:bg-slate-50 dark:hover:bg-gray-800')}>
                   <div className="relative">
                     <RoomAvatar room={room} />
                     {room.type === 'dm' && (
@@ -93,13 +93,13 @@ export default function RoomList() {
                   </div>
                   <div className="ml-4 flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <h3 className="text-sm font-semibold text-slate-900 truncate">{name || 'Unnamed'}</h3>
-                      <span className={cn('text-xs', isActive ? 'text-blue-600 font-medium' : 'text-slate-400')}>
+                      <h3 className="text-sm font-semibold text-slate-900 dark:text-gray-100 truncate">{name || 'Unnamed'}</h3>
+                      <span className={cn('text-xs', isActive ? 'text-blue-600 font-medium' : 'text-slate-400 dark:text-gray-500')}>
                         {formatRoomTime(room.last_message_at)}
                       </span>
                     </div>
                     <div className="flex items-center justify-between gap-2">
-                      <p className="text-xs text-slate-500 truncate text-body-md">{room.last_message || 'No messages yet'}</p>
+                      <p className="text-xs text-slate-500 dark:text-gray-400 truncate text-body-md">{room.last_message || 'No messages yet'}</p>
                       {(room.unread_count || 0) > 0 && (
                         <Badge className="min-w-[18px] h-[18px] px-1 bg-primary text-white text-[10px] font-bold rounded-full flex-shrink-0">
                           {room.unread_count}

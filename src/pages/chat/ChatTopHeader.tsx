@@ -13,9 +13,9 @@ export default function ChatTopHeader({
 
   return (
     <>
-      <header className="flex items-center justify-between px-6 py-3 w-full bg-white border-b border-slate-200">
+      <header className="flex items-center justify-between px-6 py-3 w-full bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-700">
         <div className="flex items-center space-x-4 flex-1 min-w-0">
-          <h1 className="text-xl font-bold tracking-tight text-slate-900">Chatify</h1>
+          <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-gray-100">Chatify</h1>
 
         <div className="relative w-full max-w-md sm:ml-8 hidden ">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none">
@@ -36,7 +36,7 @@ export default function ChatTopHeader({
             type="button"
             variant="ghost"
             size="icon"
-            className="rounded-full text-slate-500"
+            className="rounded-full text-slate-500 dark:text-gray-400"
             onClick={() => setOpenAdd(true)}
           >
             <span className="material-symbols-outlined">person_add</span>

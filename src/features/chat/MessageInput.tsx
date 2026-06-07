@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
 import { addMessage, reconcileMessage } from './chatSlice'
+import { updateRoomLastMessage } from '../rooms/roomsSlice'
 import { supabase } from '../../lib/supabase'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -51,6 +52,11 @@ export default function MessageInput() {
     }
 
     dispatch(reconcileMessage({ optimisticId, serverMessage: msg }))
+    dispatch(updateRoomLastMessage({
+      roomId,
+      message: messageType === 'image' ? '📷 Photo' : (content || '📷 Photo'),
+      at: msg.created_at,
+    }))
 
     if (attachmentFiles?.length) {
       for (const file of attachmentFiles) {
@@ -102,9 +108,9 @@ export default function MessageInput() {
   }
 
   return (
-    <footer className="bg-white px-6 py-4 border-t border-slate-100">
+    <footer className="bg-white dark:bg-gray-900 px-6 py-4 border-t border-slate-100 dark:border-gray-800">
       <form onSubmit={handleSubmit}>
-        <div className="max-w-4xl mx-auto flex items-center bg-surface-container-low rounded-full px-4 py-2 border border-slate-200 shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+        <div className="max-w-4xl mx-auto flex items-center bg-surface-container-low dark:bg-gray-800 rounded-full px-4 py-2 border border-slate-200 dark:border-gray-700 shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all">
           <Button type="button" variant="ghost" size="icon" onClick={() => fileRef.current?.click()}
             className="text-slate-500 hover:text-primary rounded-full h-9 w-9">
             <span className="material-symbols-outlined">add_circle</span>
@@ -115,12 +121,9 @@ export default function MessageInput() {
             onChange={e => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type your message..."
-            className="flex-1 bg-transparent border-none focus:ring-0 outline-none text-body-lg text-on-surface px-2 placeholder:text-slate-400"
+            className="flex-1 bg-transparent border-none focus:ring-0 outline-none text-body-lg text-on-surface dark:text-gray-100 px-2 placeholder:text-slate-400 dark:placeholder:text-gray-500"
           />
           <div className="flex items-center space-x-1">
-            <Button type="button" variant="ghost" size="icon" className="text-slate-500 hover:text-amber-500 rounded-full h-9 w-9">
-              <span className="material-symbols-outlined">mood</span>
-            </Button>
             <Button type="button" variant="ghost" size="icon" onClick={() => fileRef.current?.click()}
               className="text-slate-500 hover:text-primary rounded-full h-9 w-9">
               <span className="material-symbols-outlined">attach_file</span>

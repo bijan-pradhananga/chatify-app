@@ -69,7 +69,7 @@ export default function SideNavRail({
 
   return (
     <TooltipProvider delayDuration={300}>
-      <aside className="bg-slate-50 border-r border-slate-200 flex flex-col items-center py-6 w-20 h-screen space-y-8 flex-shrink-0">
+      <aside className="bg-slate-50 dark:bg-gray-900 border-r border-slate-200 dark:border-gray-700 flex flex-col items-center py-6 w-20 h-screen space-y-8 flex-shrink-0">
         <div className="text-lg font-black text-blue-600">C</div>
 
         <nav className="flex flex-col space-y-2 w-full px-2 flex-1">
@@ -80,7 +80,7 @@ export default function SideNavRail({
                   onClick={() => onNavigate(item.key)}
                   className={cn(
                     'flex flex-col items-center justify-center py-3 w-full rounded-lg transition-all active:scale-95 duration-200',
-                    activePage === item.key ? 'text-blue-600 bg-blue-50' : 'text-slate-500 hover:bg-slate-200'
+                    activePage === item.key ? 'text-blue-600 bg-blue-50 dark:bg-blue-950' : 'text-slate-500 dark:text-gray-400 hover:bg-slate-200 dark:hover:bg-gray-700'
                   )}
                 >
                   <span

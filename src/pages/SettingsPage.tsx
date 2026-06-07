@@ -24,10 +24,7 @@ const AVATAR_BUCKET = 'avatars'
 
 const sections = [
   { key: 'profile', icon: 'person', label: 'Profile' },
-  // { key: 'notifications', icon: 'notifications', label: 'Notifications' },
   { key: 'appearance', icon: 'palette', label: 'Appearance' },
-  { key: 'privacy', icon: 'lock', label: 'Privacy & Security' },
-  // { key: 'data', icon: 'database',i label: 'Data & Storage' },
 ]
 
 // function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
@@ -43,11 +40,12 @@ export default function SettingsPage() {
   const navigate = useNavigate()
   const user = useAppSelector(s => s.auth.user)
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('light')
-  // const [desktopNotif, setDesktopNotif] = useState(true)
-  // const [msgPreview, setMsgPreview] = useState(true)
-  // const [soundEffects, setSoundEffects] = useState(false)
-  const [readReceipts, setReadReceipts] = useState(true)
   const [activeSection, setActiveSection] = useState('profile')
+
+  useEffect(() => {
+    const saved = localStorage.getItem('theme') as 'light' | 'dark' | 'system' | null
+    if (saved) setTheme(saved)
+  }, [])
 
   const [profile, setProfile] = useState<Profile>({ username: '', avatar_url: null, bio: '' })
   const [profileLoading, setProfileLoading] = useState(false)
@@ -61,8 +59,14 @@ export default function SettingsPage() {
   function applyTheme(t: 'light' | 'dark' | 'system') {
     setTheme(t)
     localStorage.setItem('theme', t)
-    if (t === 'dark') document.documentElement.classList.add('dark')
-    else document.documentElement.classList.remove('dark')
+    if (t === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else if (t === 'light') {
+      document.documentElement.classList.remove('dark')
+    } else {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) document.documentElement.classList.add('dark')
+      else document.documentElement.classList.remove('dark')
+    }
   }
 
   useEffect(() => {
@@ -219,9 +223,9 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="bg-background text-body-md text-on-background h-screen flex flex-col">
+    <div className="bg-background dark:bg-gray-900 text-body-md text-on-background dark:text-gray-100 h-screen flex flex-col">
       {/* TopAppBar */}
-      <header className="bg-white border-b border-slate-200 flex items-center justify-between px-6 py-3 fixed top-0 w-full z-50">
+      <header className="bg-white dark:bg-gray-900 border-b border-slate-200 dark:border-gray-700 flex items-center justify-between px-6 py-3 fixed top-0 w-full z-50">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate('/chat')} className="text-slate-500">
             <span className="material-symbols-outlined">arrow_back</span>
@@ -236,7 +240,7 @@ export default function SettingsPage() {
 
       <div className="flex h-full pt-[56px]">
         {/* Side Rail */}
-        <aside className="bg-slate-50 border-r border-slate-200 flex flex-col items-center py-6 w-20 h-full space-y-8 flex-shrink-0">
+        <aside className="bg-slate-50 dark:bg-gray-800 border-r border-slate-200 dark:border-gray-700 flex flex-col items-center py-6 w-20 h-full space-y-8 flex-shrink-0">
           <div className="flex flex-col items-center gap-1">
             <Avatar className="w-10 h-10">
               <AvatarImage src={profile.avatar_url ?? undefined} alt={displayName} />
@@ -247,8 +251,7 @@ export default function SettingsPage() {
           <nav className="flex flex-col gap-4">
             {[
               { key: 'chat', icon: 'chat', path: '/chat' },
-              { key: 'group', icon: 'group' },
-              { key: 'call', icon: 'call' },
+              { key: 'contacts', icon: 'group', path: '/contacts' },
               { key: 'settings', icon: 'settings' },
             ].map(item => (
               <button key={item.key} onClick={() => item.path ? navigate(item.path) : undefined}
@@ -264,14 +267,14 @@ export default function SettingsPage() {
 
         <main className="flex-1 flex overflow-hidden">
           {/* Settings Sidebar */}
-          <div className="w-72 border-r border-slate-200 bg-white overflow-y-auto flex-shrink-0 hidden md:block">
+          <div className="w-72 border-r border-slate-200 dark:border-gray-700 bg-white dark:bg-gray-900 overflow-y-auto flex-shrink-0 hidden md:block">
             <div className="p-6">
               <h1 className="text-headline-lg mb-6">Settings</h1>
               <div className="space-y-1">
                 {sections.map(s => (
                   <a key={s.key} href={`#${s.key}`} onClick={() => setActiveSection(s.key)}
                     className={cn('flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors',
-                      activeSection === s.key ? 'bg-blue-50 text-blue-600' : 'text-slate-600 hover:bg-slate-50')}>
+                      activeSection === s.key ? 'bg-blue-50 dark:bg-blue-950 text-blue-600' : 'text-slate-600 dark:text-gray-400 hover:bg-slate-50 dark:hover:bg-gray-800')}>
                     <span className="material-symbols-outlined text-[20px]">{s.icon}</span>
                     <span className="text-label-md">{s.label}</span>
                   </a>
@@ -281,7 +284,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Settings Content */}
-          <div className="flex-1 overflow-y-auto bg-slate-50/50">
+          <div className="flex-1 overflow-y-auto bg-slate-50/50 dark:bg-gray-900">
             <div className="max-w-3xl mx-auto px-8 py-12 space-y-12">
 
               {/* Profile */}
@@ -403,41 +406,8 @@ export default function SettingsPage() {
                 </Card>
               </section>
 
-              <Separator />
-
-              {/* Privacy */}
-              <section id="privacy" className="space-y-6">
-                <h2 className="text-headline-md text-on-surface">Privacy & Security</h2>
-                <Card className="shadow-sm border-slate-100 overflow-hidden">
-                  <CardContent className="p-0 divide-y divide-slate-100">
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="text-label-md text-slate-900">Two-Factor Authentication</p>
-                        <Button variant="ghost" size="sm" className="text-primary font-bold hover:text-primary">Enable</Button>
-                      </div>
-                      <p className="text-body-md text-slate-500">Add an extra layer of security to your account.</p>
-                    </div>
-                    <div className="p-6">
-                      <p className="text-label-md text-slate-900 mb-3">Read Receipts</p>
-                      <div className="flex gap-4">
-                        {[{ val: true, label: 'Enabled' }, { val: false, label: 'Disabled' }].map(opt => (
-                          <button key={String(opt.val)} onClick={() => setReadReceipts(opt.val)}
-                            className={cn('flex-1 border p-4 rounded-xl transition-colors',
-                              readReceipts === opt.val ? 'border-primary bg-blue-50' : 'border-slate-200 hover:border-slate-300')}>
-                            <div className="flex items-center justify-between">
-                              <span className={cn('text-label-sm font-bold', readReceipts === opt.val ? 'text-primary' : 'text-slate-600')}>{opt.label}</span>
-                              <div className={cn('w-4 h-4 rounded-full', readReceipts === opt.val ? 'border-4 border-primary' : 'border-2 border-slate-300')} />
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </section>
-
               {/* Footer */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-gray-700">
                 <Button variant="ghost" disabled={profileSaving} className="text-slate-600 font-bold" onClick={handleDiscardChanges}>
                   Discard Changes
                 </Button>
