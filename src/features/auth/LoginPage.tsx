@@ -37,8 +37,8 @@ export default function LoginPage() {
       <AppHeader />
 
       <main className="flex-grow flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.08)] border border-white/50 p-8 flex flex-col gap-6"
-          style={{ background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(12px)' }} className="dark:!bg-gray-800/90 dark:border-gray-700">
+        <div className="w-full max-w-md rounded-xl shadow-[0_12px_32px_rgba(0,0,0,0.08)] dark:!bg-gray-800/90 dark:border-gray-700 border border-white/50 p-8 flex flex-col gap-6 "
+          style={{ background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(12px)' }}>
 
           {/* Brand */}
           <div className="text-center flex flex-col gap-1">
