@@ -14,9 +14,21 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({ email: '', password: '' })
+
+  function validate() {
+    const next = { email: '', password: '' }
+    if (!email) next.email = 'Email is required.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = 'Enter a valid email address.'
+    if (!password) next.password = 'Password is required.'
+    else if (password.length < 6) next.password = 'Password must be at least 6 characters.'
+    setErrors(next)
+    return !next.email && !next.password
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!validate()) return
     setLoading(true)
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     setLoading(false)
@@ -96,25 +108,22 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  onChange={(e) => { setEmail(e.target.value); setErrors(prev => ({ ...prev, email: '' })) }}
                   placeholder="name@company.com"
-                  className="
+                  className={`
                   pl-10
                   bg-slate-50
-                  border-slate-200
-
                   dark:bg-slate-800
-                  dark:border-slate-700
                   dark:text-slate-100
-
-                  focus-visible:border-blue-500
                   focus-visible:ring-1
-                  focus-visible:ring-blue-500
                   rounded-lg
-                "
+                  ${errors.email
+                    ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500'
+                    : 'border-slate-200 dark:border-slate-700 focus-visible:border-blue-500 focus-visible:ring-blue-500'}
+                `}
                 />
               </div>
+              {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -143,23 +152,19 @@ export default function LoginPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  onChange={(e) => { setPassword(e.target.value); setErrors(prev => ({ ...prev, password: '' })) }}
                   placeholder="••••••••"
-                  className="
+                  className={`
                   pl-10 pr-10
                   bg-slate-50
-                  border-slate-200
-
                   dark:bg-slate-800
-                  dark:border-slate-700
                   dark:text-slate-100
-
-                  focus-visible:border-blue-500
                   focus-visible:ring-1
-                  focus-visible:ring-blue-500
                   rounded-lg
-                "
+                  ${errors.password
+                    ? 'border-red-500 focus-visible:border-red-500 focus-visible:ring-red-500'
+                    : 'border-slate-200 dark:border-slate-700 focus-visible:border-blue-500 focus-visible:ring-blue-500'}
+                `}
                 />
 
                 <Button
@@ -182,6 +187,7 @@ export default function LoginPage() {
                   </span>
                 </Button>
               </div>
+              {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
             </div>
 
             <Button

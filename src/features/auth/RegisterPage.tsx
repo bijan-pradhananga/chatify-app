@@ -13,8 +13,25 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState({ fullName: '', email: '', password: '', confirmPassword: '' })
+
+  function validate() {
+    const next = { fullName: '', email: '', password: '', confirmPassword: '' }
+    if (!fullName.trim()) next.fullName = 'Full name is required.'
+    else if (fullName.trim().length < 2) next.fullName = 'Full name must be at least 2 characters.'
+    if (!email) next.email = 'Email is required.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) next.email = 'Enter a valid email address.'
+    if (!password) next.password = 'Password is required.'
+    else if (password.length < 8) next.password = 'Password must be at least 8 characters.'
+    if (!confirmPassword) next.confirmPassword = 'Please confirm your password.'
+    else if (confirmPassword !== password) next.confirmPassword = 'Passwords do not match.'
+    setErrors(next)
+    return !next.fullName && !next.email && !next.password && !next.confirmPassword
+  }
 
   async function handleGoogleSignIn() {
     const { error } = await supabase.auth.signInWithOAuth({
@@ -26,6 +43,7 @@ export default function RegisterPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (!validate()) return
     setLoading(true)
     const { data, error } = await supabase.auth.signUp({
       email,
@@ -96,23 +114,22 @@ export default function RegisterPage() {
                     id="full-name"
                     type="text"
                     value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
+                    onChange={(e) => { setFullName(e.target.value); setErrors(prev => ({ ...prev, fullName: '' })) }}
                     placeholder="John Doe"
-                    className="
+                    className={`
                     pl-10
                     bg-slate-50
-                    border-slate-200
                     dark:bg-slate-800
-                    dark:border-slate-700
                     dark:text-slate-100
                     focus-visible:ring-2
-                    focus-visible:ring-blue-500/20
-                    focus-visible:border-blue-500
                     rounded-lg
-                  "
+                    ${errors.fullName
+                      ? 'border-red-500 focus-visible:ring-red-500/20 focus-visible:border-red-500'
+                      : 'border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500/20 focus-visible:border-blue-500'}
+                  `}
                   />
                 </div>
+                {errors.fullName && <p className="text-xs text-red-500">{errors.fullName}</p>}
               </div>
 
               {/* Email */}
@@ -130,23 +147,22 @@ export default function RegisterPage() {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    onChange={(e) => { setEmail(e.target.value); setErrors(prev => ({ ...prev, email: '' })) }}
                     placeholder="name@company.com"
-                    className="
+                    className={`
                     pl-10
                     bg-slate-50
-                    border-slate-200
                     dark:bg-slate-800
-                    dark:border-slate-700
                     dark:text-slate-100
                     focus-visible:ring-2
-                    focus-visible:ring-blue-500/20
-                    focus-visible:border-blue-500
                     rounded-lg
-                  "
+                    ${errors.email
+                      ? 'border-red-500 focus-visible:ring-red-500/20 focus-visible:border-red-500'
+                      : 'border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500/20 focus-visible:border-blue-500'}
+                  `}
                   />
                 </div>
+                {errors.email && <p className="text-xs text-red-500">{errors.email}</p>}
               </div>
 
               {/* Password */}
@@ -164,21 +180,19 @@ export default function RegisterPage() {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                    onChange={(e) => { setPassword(e.target.value); setErrors(prev => ({ ...prev, password: '' })) }}
                     placeholder="••••••••"
-                    className="
+                    className={`
                     pl-10 pr-10
                     bg-slate-50
-                    border-slate-200
                     dark:bg-slate-800
-                    dark:border-slate-700
                     dark:text-slate-100
                     focus-visible:ring-2
-                    focus-visible:ring-blue-500/20
-                    focus-visible:border-blue-500
                     rounded-lg
-                  "
+                    ${errors.password
+                      ? 'border-red-500 focus-visible:ring-red-500/20 focus-visible:border-red-500'
+                      : 'border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500/20 focus-visible:border-blue-500'}
+                  `}
                   />
 
                   <Button
@@ -200,9 +214,60 @@ export default function RegisterPage() {
                     </span>
                   </Button>
                 </div>
+                {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
               </div>
 
+              {/* Confirm Password */}
+              <div className="space-y-1.5">
+                <Label className="text-slate-700 dark:text-slate-300">
+                  Confirm Password
+                </Label>
 
+                <div className="relative">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
+                    lock
+                  </span>
+
+                  <Input
+                    id="confirm-password"
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => { setConfirmPassword(e.target.value); setErrors(prev => ({ ...prev, confirmPassword: '' })) }}
+                    placeholder="••••••••"
+                    className={`
+                    pl-10 pr-10
+                    bg-slate-50
+                    dark:bg-slate-800
+                    dark:text-slate-100
+                    focus-visible:ring-2
+                    rounded-lg
+                    ${errors.confirmPassword
+                      ? 'border-red-500 focus-visible:ring-red-500/20 focus-visible:border-red-500'
+                      : 'border-slate-200 dark:border-slate-700 focus-visible:ring-blue-500/20 focus-visible:border-blue-500'}
+                  `}
+                  />
+
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="
+                    absolute right-1 top-1/2 -translate-y-1/2
+                    h-8 w-8
+                    text-slate-500
+                    hover:text-slate-700
+                    dark:text-slate-400
+                    dark:hover:text-slate-200
+                  "
+                  >
+                    <span className="material-symbols-outlined text-lg">
+                      {showConfirmPassword ? "visibility_off" : "visibility"}
+                    </span>
+                  </Button>
+                </div>
+                {errors.confirmPassword && <p className="text-xs text-red-500">{errors.confirmPassword}</p>}
+              </div>
 
               {/* Submit */}
               <Button
