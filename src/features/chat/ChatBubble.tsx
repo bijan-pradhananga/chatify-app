@@ -44,10 +44,17 @@ export default function ChatBubble({ message, isOwn, showAvatar }: Props) {
                   {message.content}
                 </div>
               )}
-              {message.attachments?.map(att => (
-                <img key={att.id} src={att.public_url} alt={att.file_name}
-                  className="rounded-xl max-w-sm object-cover border border-primary/20 shadow" />
-              ))}
+              {(message.message_type === 'image' || message.message_type === 'mixed') && !message.attachments?.length
+                ? (
+                  <div className="w-52 h-36 rounded-xl bg-primary/10 dark:bg-gray-700 animate-pulse flex items-center justify-center border border-primary/20">
+                    <span className="material-symbols-outlined text-primary/40 dark:text-gray-500 text-4xl">image</span>
+                  </div>
+                )
+                : message.attachments?.map(att => (
+                  <img key={att.id} src={att.public_url} alt={att.file_name}
+                    className="rounded-xl max-w-sm object-cover border border-primary/20 shadow" />
+                ))
+              }
             </>
           )}
         </div>
@@ -80,11 +87,18 @@ export default function ChatBubble({ message, isOwn, showAvatar }: Props) {
                   {message.content}
                 </div>
               )}
-              {message.attachments?.map(att => (
-                <div key={att.id} className="bg-slate-100 dark:bg-gray-700 p-2 rounded-2xl rounded-bl-none shadow-sm overflow-hidden border border-slate-200 dark:border-gray-600">
-                  <img src={att.public_url} alt={att.file_name} className="rounded-xl w-full max-w-sm object-cover aspect-video mb-2" />
-                </div>
-              ))}
+              {(message.message_type === 'image' || message.message_type === 'mixed') && !message.attachments?.length
+                ? (
+                  <div className="w-52 h-36 rounded-2xl rounded-bl-none bg-slate-200 dark:bg-gray-700 animate-pulse flex items-center justify-center border border-slate-200 dark:border-gray-600">
+                    <span className="material-symbols-outlined text-slate-400 dark:text-gray-500 text-4xl">image</span>
+                  </div>
+                )
+                : message.attachments?.map(att => (
+                  <div key={att.id} className="bg-slate-100 dark:bg-gray-700 p-2 rounded-2xl rounded-bl-none shadow-sm overflow-hidden border border-slate-200 dark:border-gray-600">
+                    <img src={att.public_url} alt={att.file_name} className="rounded-xl w-full max-w-sm object-cover aspect-video mb-2" />
+                  </div>
+                ))
+              }
             </>
           )}
         </div>

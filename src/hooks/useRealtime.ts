@@ -38,6 +38,19 @@ export function useRealtime(roomId: string | null) {
       )
       .on(
         'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'attachments' },
+        async (payload) => {
+          const messageId = (payload.new as any).message_id as string
+          const { data } = await supabase
+            .from('messages')
+            .select('*, attachments(*), profiles(username, avatar_url)')
+            .eq('id', messageId)
+            .single()
+          if (data) dispatch(updateMessage(data as Message))
+        }
+      )
+      .on(
+        'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'messages', filter: `room_id=eq.${roomId}` },
         async (payload) => {
           dispatch(updateMessage(payload.new as Message))

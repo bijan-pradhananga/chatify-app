@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '../../app/hooks'
-import { addMessage, reconcileMessage } from './chatSlice'
+import { addMessage, reconcileMessage, updateMessage } from './chatSlice'
 import { updateRoomLastMessage } from '../rooms/roomsSlice'
 import { supabase } from '../../lib/supabase'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ export default function MessageInput() {
   const user = useAppSelector(s => s.auth.user)
   const [text, setText] = useState('')
   const [uploading, setUploading] = useState(false)
+  const [pendingPreviews, setPendingPreviews] = useState<{ file: File; url: string }[]>([])
   const fileRef = useRef<HTMLInputElement>(null)
 
   async function sendMessage(content: string, attachmentFiles?: File[]) {
@@ -60,7 +61,7 @@ export default function MessageInput() {
 
     if (attachmentFiles?.length) {
       for (const file of attachmentFiles) {
-        const path = `${roomId}/${user.id}/${Date.now()}_${file.name}`
+        const path = `${user.id}/${roomId}/${Date.now()}_${file.name}`
         const { data: uploaded } = await supabase.storage.from('attachments').upload(path, file)
         if (uploaded) {
           const { data: urlData } = supabase.storage.from('attachments').getPublicUrl(path)
@@ -75,6 +76,13 @@ export default function MessageInput() {
           })
         }
       }
+      // Re-fetch message with all attachments now inserted and update Redux store
+      const { data: updatedMsg } = await supabase
+        .from('messages')
+        .select('*, attachments(*), profiles(username, avatar_url)')
+        .eq('id', msg.id)
+        .single()
+      if (updatedMsg) dispatch(updateMessage(updatedMsg))
     }
   }
 
@@ -92,9 +100,13 @@ export default function MessageInput() {
     if (invalid.length) toast.error('Some files were skipped (invalid type or >5MB)')
     const valid = files.filter(f => ALLOWED_TYPES.includes(f.type) && f.size <= MAX_SIZE)
     if (valid.length) {
+      const previews = valid.map(f => ({ file: f, url: URL.createObjectURL(f) }))
+      setPendingPreviews(previews)
       setUploading(true)
       await sendMessage(text.trim(), valid)
       setText('')
+      previews.forEach(p => URL.revokeObjectURL(p.url))
+      setPendingPreviews([])
       setUploading(false)
     }
     e.target.value = ''
@@ -109,6 +121,21 @@ export default function MessageInput() {
 
   return (
     <footer className="bg-white dark:bg-gray-900 px-6 py-4 border-t border-slate-100 dark:border-gray-800">
+      {pendingPreviews.length > 0 && (
+        <div className="max-w-4xl mx-auto mb-3 flex gap-2 flex-wrap">
+          {pendingPreviews.map((p, i) => (
+            <div key={i} className="relative w-16 h-16 rounded-xl overflow-hidden border border-slate-200 dark:border-gray-700 shadow-sm">
+              <img src={p.url} alt="" className="w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                <span className="material-symbols-outlined text-white text-[22px] animate-spin" style={{ animationDuration: '0.8s' }}>progress_activity</span>
+              </div>
+            </div>
+          ))}
+          <div className="flex items-center text-xs text-slate-400 dark:text-gray-500 ml-1">
+            Uploading…
+          </div>
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="max-w-4xl mx-auto flex items-center bg-surface-container-low dark:bg-gray-800 rounded-full px-4 py-2 border border-slate-200 dark:border-gray-700 shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all">
           <Button type="button" variant="ghost" size="icon" onClick={() => fileRef.current?.click()}
